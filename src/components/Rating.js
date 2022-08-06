@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./Rating.css";
 
 const defaultEmptyIcon = "/icons/stars/empty.svg";
@@ -15,6 +15,27 @@ const Rating = ({
 }) => {
   const [hovered, setHovered] = useState(null);
   const valueWithHover = hovered || value;
+
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.key === "ArrowLeft") {
+        if (value >= steps) {
+          onRate(value - steps);
+        }
+      } else if (event.key === "ArrowRight") {
+        if (value <= 5 - steps) {
+          onRate(value + steps);
+        }
+      }
+    },
+    [value]
+  );
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
 
   // Utility function to calculate if the mouse event happened on the left side of the target or the right side.
   const isLessThanHalf = (event) => {

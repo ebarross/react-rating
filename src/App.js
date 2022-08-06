@@ -22,7 +22,7 @@ const App = () => {
 
       <div className="flex align-items-center justify-content-center container">
         <div className="card pa-16">
-          <Rating value={ratingValue} steps={0.5} onRate={handleRate} />
+          <Rating value={ratingValue} steps={1} onRate={handleRate} />
         </div>
       </div>
     </div>

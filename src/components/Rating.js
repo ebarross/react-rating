@@ -11,6 +11,7 @@ const Rating = ({
   halfFilledIcon = defaultHalfFilledIcon,
   filledIcon = defaultFilledIcon,
   steps = 1,
+  onRate,
 }) => {
   // Utility function to calculate if the mouse event happened on the left side of the target or the right side.
   const isLessThanHalf = (event) => {
@@ -21,13 +22,24 @@ const Rating = ({
     return mouseAt <= boundingClientRect.width / 2;
   };
 
-  const renderIcon = (icon) => {
+  const handleSelect = (event) => {
+    let value = parseInt(event.target.id);
+    if (isLessThanHalf(event)) {
+      value -= 0.5;
+    }
+    onRate(value);
+  };
+
+  const renderIcon = (index, icon) => {
     return (
       <img
+        key={index}
+        id={index}
         src={icon}
         className="rating-image"
         data-testid="rating-icon"
         alt="Rate"
+        onClick={handleSelect}
       />
     );
   };
@@ -38,24 +50,25 @@ const Rating = ({
 
     if (filled === 0) {
       for (let i = 1; i <= 5; i++) {
-        symbols.push(renderIcon(emptyIcon));
+        symbols.push(renderIcon(i, emptyIcon));
       }
     } else {
       const filledFloor = Math.floor(filled);
 
       for (let i = 1; i <= filledFloor; i++) {
-        symbols.push(renderIcon(filledIcon));
+        symbols.push(renderIcon(i, filledIcon));
       }
 
       const rest = (filled * 10) % 10;
 
       if (rest !== 0) {
-        symbols.push(renderIcon(halfFilledIcon));
+        symbols.push(renderIcon(filledFloor + 1, halfFilledIcon));
       }
 
       if (filled <= 4) {
-        for (let i = 1; i <= 5 - filledFloor; i++) {
-          symbols.push(renderIcon(emptyIcon));
+        const start = rest ? 1 : 0;
+        for (let i = filledFloor + start + 1; i <= 5; i++) {
+          symbols.push(renderIcon(i, emptyIcon));
         }
       }
     }

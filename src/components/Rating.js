@@ -11,31 +11,45 @@ const Rating = ({
   halfFilledIcon = defaultHalfFilledIcon,
   filledIcon = defaultFilledIcon,
   steps = 1,
-  onRate,
 }) => {
+  const [rating, setRating] = useState(value);
   const [hovered, setHovered] = useState(null);
-  const valueWithHover = hovered || value;
+  const valueWithHover = hovered || rating;
 
   const handleKeyDown = useCallback(
     (event) => {
       if (event.key === "ArrowLeft") {
-        if (value >= steps) {
-          onRate(value - steps);
+        if (rating >= steps) {
+          updateRating(rating - steps);
         }
       } else if (event.key === "ArrowRight") {
-        if (value <= 5 - steps) {
-          onRate(value + steps);
+        if (rating <= 5 - steps) {
+          updateRating(rating + steps);
         }
+      } else if (event.key >= 1 && event.key <= 5) {
+        updateRating(event.key);
       }
     },
-    [value]
+    [rating]
   );
+
+  const updateRating = (newValue) => {
+    if (newValue === rating) {
+      setRating(0);
+    } else {
+      setRating(newValue);
+    }
+  };
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
 
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
+
+  useEffect(() => {
+    setRating(value);
+  }, [value]);
 
   // Utility function to calculate if the mouse event happened on the left side of the target or the right side.
   const isLessThanHalf = (event) => {
@@ -47,11 +61,11 @@ const Rating = ({
   };
 
   const handleMouseMove = (event) => {
-    let value = parseInt(event.target.id);
+    let newValue = parseInt(event.target.id);
     if (isLessThanHalf(event) && steps === 0.5) {
-      value -= 0.5;
+      newValue -= 0.5;
     }
-    setHovered(value);
+    setHovered(newValue);
   };
 
   const handleMouseLeave = () => {
@@ -59,11 +73,11 @@ const Rating = ({
   };
 
   const handleSelect = (event) => {
-    let value = parseInt(event.target.id);
+    let newValue = parseInt(event.target.id);
     if (isLessThanHalf(event) && steps === 0.5) {
-      value -= 0.5;
+      newValue -= 0.5;
     }
-    onRate(value);
+    updateRating(newValue);
   };
 
   const renderIcon = (index, icon) => {

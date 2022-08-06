@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Rating.css";
 
 const defaultEmptyIcon = "/icons/stars/empty.svg";
@@ -13,6 +13,9 @@ const Rating = ({
   steps = 1,
   onRate,
 }) => {
+  const [hovered, setHovered] = useState(null);
+  const valueWithHover = hovered || value;
+
   // Utility function to calculate if the mouse event happened on the left side of the target or the right side.
   const isLessThanHalf = (event) => {
     const { target } = event;
@@ -20,6 +23,18 @@ const Rating = ({
     let mouseAt = event.clientX - boundingClientRect.left;
     mouseAt = Math.round(Math.abs(mouseAt));
     return mouseAt <= boundingClientRect.width / 2;
+  };
+
+  const handleMouseMove = (event) => {
+    let value = parseInt(event.target.id);
+    if (isLessThanHalf(event) && steps === 0.5) {
+      value -= 0.5;
+    }
+    setHovered(value);
+  };
+
+  const handleMouseLeave = () => {
+    setHovered(null);
   };
 
   const handleSelect = (event) => {
@@ -40,13 +55,15 @@ const Rating = ({
         data-testid="rating-icon"
         alt="Rate"
         onClick={handleSelect}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
       />
     );
   };
 
   const renderSymbol = () => {
     const symbols = [];
-    const filled = value || 0;
+    const filled = valueWithHover || 0;
 
     if (filled === 0) {
       for (let i = 1; i <= 5; i++) {

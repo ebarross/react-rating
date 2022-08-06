@@ -24,7 +24,7 @@ const Rating = ({
 
   const handleSelect = (event) => {
     let value = parseInt(event.target.id);
-    if (isLessThanHalf(event)) {
+    if (isLessThanHalf(event) && steps === 0.5) {
       value -= 0.5;
     }
     onRate(value);

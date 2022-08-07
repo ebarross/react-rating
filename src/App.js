@@ -12,7 +12,7 @@ const App = () => {
 
       <div className="flex align-items-center justify-content-center container">
         <div className="card pa-16">
-          <Rating value={3} steps={1} />
+          <Rating />
         </div>
       </div>
     </div>

@@ -12,7 +12,7 @@ const Rating = ({
   filledIcon = defaultFilledIcon,
   steps = 1,
 }) => {
-  const [rating, setRating] = useState(value);
+  const [rating, setRating] = useState(value || 0);
   const [hovered, setHovered] = useState(null);
   const valueWithHover = hovered || rating;
 
@@ -43,12 +43,13 @@ const Rating = ({
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
-
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
   useEffect(() => {
-    setRating(value);
+    if (value) {
+      setRating(value);
+    }
   }, [value]);
 
   // Utility function to calculate if the mouse event happened on the left side of the target or the right side.
